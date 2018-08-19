@@ -1,0 +1,44 @@
+<!--
+  Generated template for the SaisieInventairePage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+
+    <ion-navbar color="primary">
+
+        <ion-title>Saisie d'inventaire</ion-title>
+
+        <ion-buttons end>
+            <button ion-button icon-only (click)="validateInventory()">
+                <ion-icon name="checkmark"></ion-icon>
+            </button>
+            <button ion-button icon-only (click)="showManualModal()">
+                <!--Pour l'ajout manuel-->
+                <ion-icon name="add"></ion-icon>
+            </button>
+            <button ion-button icon-only (click)="showScanModal()">
+                <!--Pour le scan-->
+                <ion-icon name="qr-scanner"></ion-icon>
+            </button>
+        </ion-buttons>
+    </ion-navbar>
+
+</ion-header>
+
+
+<ion-content padding>
+    <ion-item>
+        <ion-label color="primary" floating>Nom de l'inventaire</ion-label>
+        <ion-input [(ngModel)]="inventory.name"></ion-input>
+    </ion-item>
+    <h1 text-center>Liste des produits</h1>
+    <h2 *ngIf="inventory.entries.length <= 0" text-center>Vide</h2>
+
+    <ion-list>
+        <button ion-item *ngFor="let item of inventory.entries; let i = index" (click)="modifyEntry(i)">
+            {{ item.qty }} - {{ item.code }}
+        </button>
+    </ion-list>
+</ion-content>
