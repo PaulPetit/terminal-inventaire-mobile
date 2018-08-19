@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="fr.paul-petit.terminalinventaire" version="0.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+<widget id="fr.paul_petit.terminal_inventaire" version="0.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <name>Terminal d'inventaire</name>
     <description>Terminal d'inventaire pour réceptionner les commandes sur LGPI</description>
     <author email="paul.petit76@gmail.com" href="http://www.paul-petit.fr/">Paul Petit</author>
