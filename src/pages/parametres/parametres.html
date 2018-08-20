@@ -1,0 +1,28 @@
+<ion-header>
+  <ion-navbar color="primary">
+    <ion-title>
+      Paramètres
+    </ion-title>
+  </ion-navbar>
+</ion-header>
+
+
+<ion-content padding>
+  <ion-list>
+    <ion-list-header>
+      Lecteur de codes barre
+    </ion-list-header>
+
+    <ion-item>
+      <ion-icon name="flash" item-start color="danger"></ion-icon>
+      <ion-label>Laisser le flash allumé</ion-label>
+      <ion-toggle (ionChange)="saveParameters()" [(ngModel)]="parameters.barcodeScanner.enableFlash" color="secondary"></ion-toggle>
+    </ion-item>
+
+
+  </ion-list>
+
+
+
+
+</ion-content>

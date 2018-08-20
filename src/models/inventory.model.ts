@@ -4,4 +4,5 @@ export interface Inventory {
     name?: string;
     date?: object;
     entries?: Entry[];
+    key?: string;
 }

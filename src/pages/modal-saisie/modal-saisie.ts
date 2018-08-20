@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams, Platform, ViewController, AlertController } from 'ionic-angular';
 import { BarcodeScanner } from "@ionic-native/barcode-scanner";
 import { BARCODESCANNER_OPTIONS } from '../../app/barcodeScanner.options';
+import { ParametersProvider } from '../../providers/parameters/parameters';
 
 /**
  * Generated class for the ModalSaisiePage page.
@@ -21,6 +22,7 @@ export class ModalSaisiePage {
     public type;
     private wasScanning: boolean;
     public entry;
+    private unregisterBackButton: Function;
 
     constructor(
         public navCtrl: NavController,
@@ -28,14 +30,15 @@ export class ModalSaisiePage {
         private viewCtrl: ViewController,
         private barcodeScanner: BarcodeScanner,
         private platform: Platform,
-        private alertCtrl: AlertController
+        private alertCtrl: AlertController,
+        private parametersProvider: ParametersProvider
     ) {
 
         /**
          * Quand on appuie sur le bouton retour du telephone et pas sur "annuler"
          */
-        this.platform.registerBackButtonAction(() => {
-            if (!this.wasScanning) {
+        this.unregisterBackButton = this.platform.registerBackButtonAction(() => {
+            if (this.wasScanning) {
                 this.cancel();
             }
         }, 2);
@@ -66,21 +69,55 @@ export class ModalSaisiePage {
         console.log('ionViewDidLoad ModalSaisiePage');
     }
 
+    ionViewWillLeave() {
+        this.unregisterBackButton();
+    }
+
+    private isDataCorrect(): boolean {
+        if (this.data.code == undefined || this.data.code == "" || this.data.qty <= 0) {
+            // this.data.qty <= 0 n'est pas possible en principe
+            return false;
+        }
+        return true;
+    }
+
     confirm() {
         console.log('Confirm');
-        let returnData = { status: 'confirmed', ...this.data }
-        console.log(returnData);
-        this.viewCtrl.dismiss(returnData);
+        if (this.isDataCorrect()) {
+            let returnData = { status: 'confirmed', ...this.data }
+            console.log(returnData);
+            this.viewCtrl.dismiss(returnData);
+        }
+        else {
+            this.showError();
+        }
+
+    }
+    private showError() {
+        let alert = this.alertCtrl.create({
+            title: "Erreur",
+            message: "Le code ne doit pas être vide !",
+            buttons: ["OK"]
+
+        });
+        alert.present();
     }
 
     confirmAndContinue() {
         console.log('Confirm and continue');
-        let returnData = { status: 'continue', ...this.data }
-        console.log(returnData);
-        this.viewCtrl.dismiss(returnData);
+        if (this.isDataCorrect()) {
+            let returnData = { status: 'continue', ...this.data }
+            console.log(returnData);
+            this.viewCtrl.dismiss(returnData);
+        }
+        else {
+            this.showError();
+        }
+
     }
 
     cancel() {
+        console.log('Cancel');
         let returnData = { status: 'cancelled', ...this.data }
         console.log(returnData);
         this.viewCtrl.dismiss(returnData);
@@ -88,27 +125,38 @@ export class ModalSaisiePage {
 
     scan() {
 
-        this.barcodeScanner.scan(BARCODESCANNER_OPTIONS).then(barcodeData => {
-            console.log('Barcode data', barcodeData);
-            if (!barcodeData.cancelled) {
+        // On charge les paramètres
+
+        this.parametersProvider.getParameter('barcodeScanner').then(barcodeScannerParameters => {
+            let options = BARCODESCANNER_OPTIONS;
+            options = { ...options, torchOn: barcodeScannerParameters.enableFlash }
+
+            // console.log(options);
+
+            this.barcodeScanner.scan(options).then(barcodeData => {
+                console.log('Barcode data', barcodeData);
+                if (!barcodeData.cancelled) {
+                    this.wasScanning = false;
+                    // Si pas annulé, on continue
+                    // On retire le premier caratère de barcodeData.text si il est de format DATA_MATRIX
+                    if (barcodeData.format === 'DATA_MATRIX') {
+                        this.data.code = barcodeData.text.slice(1, barcodeData.text.length);
+                    }
+                    else {
+                        this.data.code = barcodeData.text;
+                    }
+                } else {
+                    // Si annulé, on ferme la page
+                    this.wasScanning = true;
+                    console.log('Scan annulé');
+                }
+            }).catch(err => {
                 this.wasScanning = false;
-                // Si pas annulé, on continue
-                // On retire le premier caratère de barcodeData.text si il est de format DATA_MATRIX
-                if (barcodeData.format === 'DATA_MATRIX') {
-                    this.data.code = barcodeData.text.slice(1, barcodeData.text.length);
-                }
-                else {
-                    this.data.code = barcodeData.text;
-                }
-            } else {
-                // Si annulé, on ferme la page
-                this.wasScanning = true;
-                console.log('Scan annulé');
-            }
-        }).catch(err => {
-            this.wasScanning = false;
-            console.log('Error', err);
+                console.log('Error', err);
+            });
         });
+
+
     }
 
     changeQty(x: number) {

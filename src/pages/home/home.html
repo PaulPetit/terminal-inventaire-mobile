@@ -3,13 +3,18 @@
         <ion-title>
             Terminal d'inventaire
         </ion-title>
+        <ion-buttons end>
+            <button ion-button icon-only navPush="ParametresPage">
+                <ion-icon name="cog"></ion-icon>
+            </button>
+        </ion-buttons>
     </ion-navbar>
 </ion-header>
 
 <ion-content padding>
     <div text-center style="height: 100%;">
         <button class="btn-home" ion-button (click)="newInventory()">Saisir un inventaire</button>
-        <button class="btn-home" ion-button>Liste des inventaires</button>
+        <button class="btn-home" ion-button navPush="ListeInventairesPage">Liste des inventaires</button>
     </div>
 
 </ion-content>

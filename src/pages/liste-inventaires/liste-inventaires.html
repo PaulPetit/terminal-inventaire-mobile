@@ -1,0 +1,16 @@
+<ion-header>
+  <ion-navbar color="primary">
+    <ion-title>
+      Liste des inventaires
+    </ion-title>
+  </ion-navbar>
+</ion-header>
+
+
+<ion-content padding>
+  <ion-list>
+    <button ion-item *ngFor="let item of inventories" (click)="showOptions(item)">
+      {{ item.date | date : "dd/MM/yy HH:mm:ss" }} - {{ item.name }}
+    </button>
+  </ion-list>
+</ion-content>

@@ -8,7 +8,9 @@
 
     <ion-navbar color="primary">
 
-        <ion-title>Saisie d'inventaire</ion-title>
+
+        <ion-title *ngIf="type != 'modification'">Saisie d'inventaire</ion-title>
+        <ion-title *ngIf="type == 'modification'">Modification d'inventaire</ion-title>
 
         <ion-buttons end>
             <button ion-button icon-only (click)="validateInventory()">
@@ -31,7 +33,7 @@
 <ion-content padding>
     <ion-item>
         <ion-label color="primary" floating>Nom de l'inventaire</ion-label>
-        <ion-input [(ngModel)]="inventory.name"></ion-input>
+        <ion-input [(ngModel)]="inventory.name" (ionChange)='saveInventoryLocal()'></ion-input>
     </ion-item>
     <h1 text-center>Liste des produits</h1>
     <h2 *ngIf="inventory.entries.length <= 0" text-center>Vide</h2>

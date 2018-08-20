@@ -16,6 +16,7 @@ import { AngularFireDatabaseModule } from "angularfire2/database";
 import { IonicStorageModule } from '@ionic/storage';
 
 import { Network } from '@ionic-native/network';
+import { ParametersProvider } from '../providers/parameters/parameters';
 
 @NgModule({
     declarations: [
@@ -45,7 +46,8 @@ import { Network } from '@ionic-native/network';
         { provide: ErrorHandler, useClass: IonicErrorHandler },
         BarcodeScanner,
         ApiProvider,
-        Network
+        Network,
+    ParametersProvider
     ]
 })
 export class AppModule {
